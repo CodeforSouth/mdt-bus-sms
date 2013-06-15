@@ -1,0 +1,4 @@
+cgi-bin
+config/config.php
+composer.phar
+composer.json
