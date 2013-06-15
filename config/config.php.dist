@@ -1,0 +1,15 @@
+<?php
+
+return array(
+	"gtfs_exchange" => array(
+		"feeds" => array(
+			"mdt" => "http://www.gtfs-data-exchange.com/agency/miami-dade-transit/feed",
+			"brampton" => "http://www.gtfs-data-exchange.com/agency/brampton-transit/feed",
+		),
+	),
+	"twilio" => array(
+		"send_number" => "",
+		"sid" => "",
+		"auth_token" => "",
+	),
+);	
