@@ -1,6 +1,7 @@
 <?php
 namespace SmsBus;
 
+use SmsBus\Db\AgencyTable;
 use Zend\Feed\Reader;
 use Zend\Config\Config;
 
@@ -32,8 +33,21 @@ class ExchangeFeedReader {
 			if($channel->count() > 0 && $today->diff($channel->getDateModified())->d < 7) {
 				$file = $this->getDataArchive($agency, $channel->current()->getEnclosure()->url);
 				$dir = $this->extractData($agency, $file);
+				foreach(scandir($dir) as $file){
+					if(is_file($dir . '/' . $file) && strpos($file, '.txt') !== false) {
+						$this->insertRecords(substr($file, 0, strpos($file, '.txt')), $dir . '/' . $file);
+					}
+				} 
 			}
 		}
+	}
+	
+	private function insertRecords($tableName, $file) {
+		$tableClass = ucfirst($tableName) . 'Table';
+		$table = new $tableClass();
+		var_dump($table);
+		die();
+		$records = new \Keboola\Csv\CsvFile($file);
 	}
 	
 	private function getDataArchive($agency, $url) {
