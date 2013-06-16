@@ -4,12 +4,18 @@ return array(
 	"gtfs_exchange" => array(
 		"feeds" => array(
 			"mdt" => "http://www.gtfs-data-exchange.com/agency/miami-dade-transit/feed",
-			"brampton" => "http://www.gtfs-data-exchange.com/agency/brampton-transit/feed",
+			"brampton" => "http://www.gtfs-data-exchange.com/agency/brampton-transit/feed", //Test feed with current data
 		),
 	),
 	"twilio" => array(
 		"send_number" => "",
 		"sid" => "",
 		"auth_token" => "",
+	),
+	"db" => array(
+		"driver" => "PDO",
+		"dsn" => "mysql:host=DB_HOST;dbname=DB_NAME",
+		"user" => "",
+		"pass" => "",
 	),
 );	
