@@ -1,12 +1,12 @@
 <?php
 namespace SmsBus;
 
-use SmsBus\Db\AgencyTable;
 use Zend\Feed\Reader;
 use Zend\Config\Config;
 
 class ExchangeFeedReader {
 	protected $config;
+	protected $agency = 0;
 	
 	public function __construct(Config $config = null) {
 		if(!$config) {
@@ -34,20 +34,26 @@ class ExchangeFeedReader {
 				$file = $this->getDataArchive($agency, $channel->current()->getEnclosure()->url);
 				$dir = $this->extractData($agency, $file);
 				foreach(scandir($dir) as $file){
+					$tableName = substr($file, 0, strpos($file, '.txt'));
 					if(is_file($dir . '/' . $file) && strpos($file, '.txt') !== false) {
-						$this->insertRecords(substr($file, 0, strpos($file, '.txt')), $dir . '/' . $file);
+						$lastId = $this->insertRecords($tableName, $dir . '/' . $file, $this->agency);
+					}
+					if($tableName == "agency") {
+						$this->agency = $lastId;
 					}
 				} 
 			}
 		}
 	}
 	
-	private function insertRecords($tableName, $file) {
-		$tableClass = ucfirst($tableName) . 'Table';
+	private function insertRecords($tableName, $file, $agency_id) {
+		$tableName = $this->toCamelCase($tableName, true);
+		$tableClass = '\\SmsBus\\Db\\' . ucfirst($tableName) . 'Table';
 		$table = new $tableClass();
-		var_dump($table);
-		die();
-		$records = new \Keboola\Csv\CsvFile($file);
+		if($agency_id && $table->needsAgency()) {
+			$table->setAgencyId($agency_id);
+		}
+		return $table->importCSV(new \Keboola\Csv\CsvFile($file));
 	}
 	
 	private function getDataArchive($agency, $url) {
@@ -83,5 +89,13 @@ class ExchangeFeedReader {
 		}
 		
 		return $dir;
+	}
+	
+	protected function toCamelCase($str, $capitalise_first_char = false) {
+		if($capitalise_first_char) {
+			$str[0] = strtoupper($str[0]);
+		}
+		$func = create_function('$c', 'return strtoupper($c[1]);');
+		return preg_replace_callback('/_([a-z])/', $func, $str);
 	}
 }
