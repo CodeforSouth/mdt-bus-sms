@@ -80,6 +80,7 @@ abstract class AbstractTable {
 			$result = $stmt->execute($insertData);
 			if(!$result) {
 				var_dump($sql);
+				var_dump($this->table);
 				var_dump($stmt->errorInfo());
 			}
 		}
