@@ -20,7 +20,9 @@ class StopTimesTable extends AbstractTable {
 			return false;
 		}
 		
-		$sql = "SELECT `stop_times`.*, `routes`.* FROM `stop_times` LEFT JOIN `trips` ON `stop_times`.`trip_id` = `trips`.`trip_id` LEFT JOIN `routes` ON `trips`.`route_id` = `routes`.`route_id` WHERE `stop_times`.`stop_id` = :stop_id AND `routes`.`route_short_name` = :bus_id AND `stop_times`.`arrival_time` > CURTIME() ORDER BY `stop_times`.`arrival_time` ASC LIMIT 0, 3";
+		$now = new \DateTime();
+		$day = strtolower($now->format('l'));				
+		$sql = "SELECT `stop_times`.*, `routes`.* FROM `stop_times` LEFT JOIN `trips` ON `stop_times`.`trip_id` = `trips`.`trip_id` LEFT JOIN `routes` ON `trips`.`route_id` = `routes`.`route_id` LEFT JOIN `calendar` ON `calendar`.`service_id`=`trips`.`service_id` WHERE `calendar`.`" . $day . "` = 1 AND `stop_times`.`stop_id` = :stop_id AND `routes`.`route_short_name` = :bus_id AND `stop_times`.`arrival_time` > '" . $now->format('H:i:s') . "' ORDER BY `stop_times`.`arrival_time` ASC LIMIT 0, 3";
 		$stmt = $this->dbConn->prepare($sql);
 		$result = $stmt->execute(array(":stop_id" => $stop, ":bus_id" => $bus));
 		if(!$result) {
