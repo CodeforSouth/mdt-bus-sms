@@ -25,7 +25,7 @@ if(count($route) <= 1) {
 
 //Prepare translatation
 $translator = new \Zend\I18n\Translator\Translator();
-$translator->addTranslationFilePattern('phparray', $config->translation->file_pattern, 'smsbus');
+$translator->addTranslationFilePattern('phparray', $config->translation->base_dir, $config->translation->file_pattern, 'smsbus');
 $accepted = array_keys(iterator_to_array($config->translation->accepted));
 if(in_array($route[0], $accepted)) {
 	$loc = $config->translation->accepted[array_shift($route)];
