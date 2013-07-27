@@ -1,65 +1,70 @@
 <?php
-//Bootsrapt the application
+/**
+ * TextMyBus SMS App
+ */
+
+// SET DEFAULT TIME ZONE IN CASE NOT SET IN INI
 date_default_timezone_set('America/New_York');
-require "../vendor/autoload.php";
-$config = new \Zend\Config\Config(include __DIR__ . "/../config/config.php");
-$twilioCon = clone $config->twilio;
-if(!isset($_POST['AccountSid']) || $_POST['AccountSid'] !== (string) $twilioCon->sid) {
-	header('Location: http://miamiwiki.org/SMSBus_Project');
-	exit(0);
-}
-$twiml = new \Services_Twilio_Twiml();
 
-$smsTable = new \SmsBus\Db\ReceivedSMSTable();
-$result = $smsTable->save($_POST);
-$body = strtolower(preg_replace('/[^a-z0-9_-\s]+/i', '', $_POST['Body']));
-$route = explode(" ", $body);
+require_once __DIR__.'/../vendor/autoload.php';
 
-//If there was no message or only one word, then return an error
-if(count($route) <= 1) {
-	$twiml->sms("Please send more information");
-	header("content-type: text/xml");
-	print $twiml;
-	exit();
-}
+use SmsBus\Bootstrap;
+use SmsBus\StopController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
-//Prepare translatation
-$translator = new \Zend\I18n\Translator\Translator();
-$translator->addTranslationFilePattern('phparray', $config->translation->base_dir, $config->translation->file_pattern, 'smsbus');
-$accepted = array_keys(iterator_to_array($config->translation->accepted));
-if(in_array($route[0], $accepted)) {
-	$loc = $config->translation->accepted[array_shift($route)];
-	foreach($route as $i => $command) {
-		$route[$i] = $translator->translate($command, 'smsbus', $loc);
-	}
-}
+$app = new Silex\Application();
+// BOOTSTRAP THE APPLICATION
+$bootstrap = new Bootstrap();
+$controllers = new StopController($app, $bootstrap->getTranslator());
 
-$stop = 0;
-$bus = 0;
-if($route[0] === "stop") {
-	$stop = intval($route[1]);
-}
-if ($route[2] === "bus") {
-	$bus = intval($route[3]);
-}
-$timesTable = new \SmsBus\Db\StopTimesTable();
-$stoptimes = $timesTable->fetchByBusStop($stop, $bus);
-$message = '';
-$times = array();
-if(!$stoptimes) {
-	$message = "There was an error fetching the stop times.";
-} else if (is_array($stoptimes) && count($stoptimes) > 0) {
-	foreach($stoptimes as $stop_time) {
-		$now = new \DateTime();
-		$time = $now->diff(\DateTime::createFromFormat("H:i:s", $stop_time['arrival_time']));
-		$times[] = $time->h . ":" . $time->i . ":" . $time->s;
-	}
-	$message = implode(', ', $times);
-} else {
-	$message = "Bus " . $bus . " will not stop at " . stop . " any more today";
-}
+// FRONT CONTROLLER
+$app->post('/', function (Request $request) use ($app, $bootstrap) {
 
-$twiml->sms($message);
-header("content-type: text/xml");
-print $twiml;
-?>
+    // REDIRECT TO THE MIAMI WIKI IF THE REQUEST IS NOT FROM TWILIO
+    if($request->get('AccountSid', false) !== $bootstrap->getConfig()->twilio->sid) {
+        return $app->redirect('http://miamiwiki.org/SMSBus_Project');
+    }
+
+    // SAVE THE POST TO THE DB FOR DEBUGGING
+    $smsTable = new \SmsBus\Db\ReceivedSMSTable();
+    $smsTable->save($request->request->all());
+
+    // FILTER AND RETRIEVE THE SMS MESSAGE FROM THE REQUEST
+    $body = strtolower(preg_replace('/[^a-z0-9_-\s]+/i', '', $request->get('Body')));
+    $words = explode(" ", $body);
+
+    // RETURN ERROR FOR LACK OF INFORMATION
+    if(count($words) <= 1) {
+        $bootstrap->getTwiml()->sms("Please send more information");
+        return $bootstrap->getResponse();
+    }
+
+    // CHECK THAT THE FIRST WORD IS AN ACCEPTED TRANSLATION LANGUAGE
+    if($bootstrap->isAcceptedLocale($words[0])) {
+        $bootstrap->setLocale(array_shift($words));
+        // TRANSLATE EACH WORD OR RETURN THE WORD (NUMBERS JUST GET RETURNED)
+        foreach($words as $i => $command) {
+            $words[$i] = $bootstrap->getTranslator()->translate($command, 'smsbus');
+        }
+    }
+
+    // CREATE A SUB REQUEST TO HANDLE THE DIFFERENT APP COMMANDS
+    $subRequest = Request::create('/' . implode('/', $words) . '/' . $bootstrap->getTranslator()->getLocale());
+    $response = $app->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
+
+    // RETURN THE TWIML RESPONSE
+    $bootstrap->getTwiml()->sms($response->getContent());
+    return $bootstrap->getResponse();
+});
+
+// REDIRECT GET REQUESTS TO THE MIAMI WIKI
+$app->get('/', function() use ($app) {
+    return $app->redirect('http://miamiwiki.org/SMSBus_Project');
+});
+
+// DEFINE THE CONTROLLERS FOR THE ACTUAL BUSINESS LOGIC OF THE APP
+$app->mount('/stop/{stopId}/bus/{busId}/{locale}', $controllers->getStopBusController());
+
+
+$app->run();
