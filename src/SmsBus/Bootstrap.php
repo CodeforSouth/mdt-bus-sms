@@ -81,39 +81,4 @@ class Bootstrap
         return $this->response;
     }
 
-    /**
-     * @param string $loc
-     * @return $this
-     */
-    public function setLocale($loc)
-    {
-        $shortCode = substr($loc, 0, 2);
-        if($this->isAcceptedLocale($shortCode)) {
-            $this->locale = $this->config->translation->accepted[$shortCode];
-            $this->translator->setLocale($this->locale);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $loc
-     * @return bool
-     */
-    public function isAcceptedLocale($loc)
-    {
-        return in_array($loc, $this->getAcceptedLocales());
-    }
-
-    /**
-     * @return array
-     */
-    public function getAcceptedLocales()
-    {
-        if(!$this->acceptedLocales){
-            $this->acceptedLocales = array_keys(iterator_to_array($this->config->translation->accepted));
-        }
-
-        return $this->acceptedLocales;
-    }
 }
