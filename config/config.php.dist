@@ -21,9 +21,10 @@ return array(
 	"translation" => array(
 		"file_pattern" => __DIR__ . "/../translate/%s/language.php",
 		"accepted" => array(
-			"en",
-			"es",
-			"cr",
+			"en" => 'en-US',
+			"es" => 'es-ES',
+			"cr" => 'fr-FR',
+			'fr" => 'fr-FR',
 		),
 	),
 );	
