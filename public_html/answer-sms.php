@@ -50,7 +50,7 @@ $app->post('/', function (Request $request) use ($app, $bootstrap) {
     }
 
     // CREATE A SUB REQUEST TO HANDLE THE DIFFERENT APP COMMANDS
-    $subRequest = Request::create('/' . implode('/', $words) . '/' . $bootstrap->getTranslator()->getLocale());
+    $subRequest = Request::create('/' . $bootstrap->getTranslator()->getLocale() . '/' . implode('/', $words));
     $response = $app->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
 
     // RETURN THE TWIML RESPONSE
@@ -64,7 +64,7 @@ $app->get('/', function() use ($app) {
 });
 
 // DEFINE THE CONTROLLERS FOR THE ACTUAL BUSINESS LOGIC OF THE APP
-$app->mount('/stop/{stopId}/bus/{busId}/{locale}', $controllers->getStopBusController());
-$app->mount('/stop/{stopId/{locale}', $controllers->getStopController());
+$app->mount('/{locale}/stop', $controllers->getStopBusController());
+//$app->mount('/stop/{stopId}/{locale}', $controllers->getStopController());
 
 $app->run();

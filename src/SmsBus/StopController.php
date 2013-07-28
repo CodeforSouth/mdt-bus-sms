@@ -30,7 +30,7 @@ class StopController
     {
         $translator = $this->translator;
         $stopBus = $this->app['controllers_factory'];
-        $stopBus->get('/', function ($stopId, $busId, $locale) use ($translator) {
+        $stopBus->get('/{stopId}/{bus}/{busId}', function ($locale, $stopId, $bus, $busId) use ($translator) {
 
             // PREPARE THE TRANSLATOR
             $translator->setLocale($locale);
@@ -39,10 +39,13 @@ class StopController
             $timesTable = new StopTimesTable();
 
             // GET THE NEXT 3 TIMES THE BUS WILL ARRIVE AT THE STOP
-            $stopTimes = $timesTable->fetchByBusStop($stopId, $busId);
+            if ($bus) {
+                $stopTimes = $timesTable->fetchByBusStop($stopId, $busId);
+            } else {
+                $stopTimes = $timesTable->fetchByStop($stopId);
+            }
 
             // INSTANTIATE THE DEFAULTS
-            $message = '';
             $times = array();
 
             if (!$stopTimes) {
@@ -55,7 +58,11 @@ class StopController
 
                     $time = $now->diff(\DateTime::createFromFormat("H:i:s", $stop_time['arrival_time']));
 
-                    $times[] = $time->h . ":" . $time->i . ":" . $time->s;
+                    if ($bus) {
+                        $times[] = $time->h . ":" . $time->i . ":" . $time->s;
+                    } else {
+                        $times[] = $translator->translate('Bus') . ' ' . $stop_time['route_short_name'] . ': ' . $time->h . ":" . $time->i . ":" . $time->s;
+                    }
                 }
 
                 $message = implode(', ', $times);
@@ -68,23 +75,10 @@ class StopController
         })
             ->convert('stopId', array($this, 'intProvider'))
             ->convert('busId', array($this, 'intProvider'))
-            ->value('locale', 'en-US');
+            ->value('locale', 'en-US')
+            ->value('bus', false)
+            ->value('busId', 0);
         return $stopBus;
-    }
-
-    public function getStopController()
-    {
-        $translator = $this->translator;
-        $stop = $this->app['controllers_factory'];
-        $stop->get('/', function ($stopId, $locale) use ($translator) {
-            // PREPARE THE TRANSLATOR
-            $translator->setLocale($locale);
-
-        })
-            ->convert('stopId', array($this, 'intProvider'))
-            ->value('locale', 'en-US');
-
-        return $stop;
     }
 
     /**
