@@ -6,6 +6,7 @@ use Zend\Config\Config;
 
 abstract class AbstractTable {
 	protected $config;
+    /* @var $dbConn \PDO */
 	protected $dbConn;
 	protected $table = '';
 	protected $agency;
