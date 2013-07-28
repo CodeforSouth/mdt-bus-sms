@@ -65,6 +65,6 @@ $app->get('/', function() use ($app) {
 
 // DEFINE THE CONTROLLERS FOR THE ACTUAL BUSINESS LOGIC OF THE APP
 $app->mount('/stop/{stopId}/bus/{busId}/{locale}', $controllers->getStopBusController());
-
+$app->mount('/stop/{stopId/{locale}', $controllers->getStopController());
 
 $app->run();

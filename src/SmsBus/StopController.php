@@ -72,6 +72,21 @@ class StopController
         return $stopBus;
     }
 
+    public function getStopController()
+    {
+        $translator = $this->translator;
+        $stop = $this->app['controllers_factory'];
+        $stop->get('/', function ($stopId, $locale) use ($translator) {
+            // PREPARE THE TRANSLATOR
+            $translator->setLocale($locale);
+
+        })
+            ->convert('stopId', array($this, 'intProvider'))
+            ->value('locale', 'en-US');
+
+        return $stop;
+    }
+
     /**
      * @param $number
      * @return int
