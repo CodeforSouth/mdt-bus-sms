@@ -31,7 +31,7 @@ $app->post('/', function (Request $request) use ($app, $bootstrap) {
     $smsTable->save($request->request->all());
 
     // FILTER AND RETRIEVE THE SMS MESSAGE FROM THE REQUEST
-    $body = strtolower(preg_replace('/[^a-z0-9_-\s]+/i', '', $request->get('Body')));
+    $body = strtolower(preg_replace('/[^a-z0-9_-\s\&\,]+/i', '', $request->get('Body')));
     $words = explode(" ", $body);
 
     // RETURN ERROR FOR LACK OF INFORMATION
@@ -50,7 +50,14 @@ $app->post('/', function (Request $request) use ($app, $bootstrap) {
     }
 
     // CREATE A SUB REQUEST TO HANDLE THE DIFFERENT APP COMMANDS
-    $subRequest = Request::create('/' . $bootstrap->getTranslator()->getLocale() . '/' . implode('/', $words));
+    if($words[0] == 'stop' && $words[1] == 'at') {
+        // REMOVE THE COMMAND WORDS
+        $action =  array_shift($words) . '/' . array_shift($words);
+        $addressFull = implode(' ', $words);
+        $subRequest = Request::create('/' . $bootstrap->getTranslator()->getLocale() . '/' . $action . '/' . urlencode($addressFull));
+    } else {
+        $subRequest = Request::create('/' . $bootstrap->getTranslator()->getLocale() . '/' . implode('/', $words));
+    }
     $response = $app->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
 
     // RETURN THE TWIML RESPONSE
@@ -64,7 +71,7 @@ $app->get('/', function() use ($app) {
 });
 
 // DEFINE THE CONTROLLERS FOR THE ACTUAL BUSINESS LOGIC OF THE APP
+$app->mount('/{locale}/stop/at', $controllers->getStops());
 $app->mount('/{locale}/stop', $controllers->getStopBusController());
-//$app->mount('/stop/{stopId}/{locale}', $controllers->getStopController());
 
 $app->run();

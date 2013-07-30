@@ -3,8 +3,52 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e7acb01aef0e21640bf89a4e6af48aa3",
+    "hash": "63ec6a5988885305b15c598583a7213e",
     "packages": [
+        {
+            "name": "adamculp/api-consumer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/adamculp/api-consumer.git",
+                "reference": "1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/adamculp/api-consumer/zipball/1.0.0",
+                "reference": "1.0.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ApiConsumer": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adam Culp",
+                    "email": "adamculp@uws.net",
+                    "homepage": "http://geekyboy.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Basic API wrapper for dealing with Mashery and other GET based APIs.",
+            "keywords": [
+                "Api Wrapper",
+                "api",
+                "mashery api",
+                "wrapper"
+            ],
+            "time": "2013-04-12 18:33:27"
+        },
         {
             "name": "keboola/csv",
             "version": "1.1.0",
@@ -996,9 +1040,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "adamculp/api-consumer": 20
+    },
     "platform": [
 
     ],

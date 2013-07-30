@@ -7,6 +7,7 @@
 
 namespace SmsBus;
 
+use ApiConsumer\Consumer;
 use Silex\Application;
 use SmsBus\Db\StopTimesTable;
 use Zend\I18n\Translator\Translator;
@@ -79,6 +80,39 @@ class StopController
             ->value('bus', false)
             ->value('busId', 0);
         return $stopBus;
+    }
+
+    public function getStops()
+    {
+        $translator = $this->translator;
+        $stops = $this->app['controllers_factory'];
+        $stops->get('/{address}', function ($locale, $address) use ($translator) {
+            // PREPARE THE TRANSLATOR
+            $translator->setLocale($locale);
+
+            // PREPARE ARCGIS API REQUEST
+            $url = 'http://maps.googleapis.com/maps/api/geocode/json';
+            $params = array(
+                'address' => $address,
+                'sensor' => false,
+            );
+
+            $consumer = new Consumer();
+            $consumer->setUrl($url);
+            $consumer->setParams($params);
+            $consumer->setOptions(array());
+            $consumer->setResponseType('json');
+            $consumer->setCallType('get');
+
+            // GET ADDRESS GEOLOCATION
+            $result = $consumer->doApiCall();
+
+            var_dump($result);
+            die();
+
+        });
+
+        return $stops;
     }
 
     /**
