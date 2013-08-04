@@ -12,6 +12,9 @@ return array(
 		"sid" => "",
 		"auth_token" => "",
 	),
+	"mapquest" => array(
+            "app_key" => "",
+     ),
 	"db" => array(
 		"driver" => "PDO",
 		"dsn" => "mysql:host=localhost;dbname=",
