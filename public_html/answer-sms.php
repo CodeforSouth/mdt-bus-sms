@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 $app = new Silex\Application();
 // BOOTSTRAP THE APPLICATION
 $bootstrap = new Bootstrap();
-$controllers = new StopController($app, $bootstrap->getTranslator());
+$controllers = new StopController($app, $bootstrap->getConfig(), $bootstrap->getTranslator());
 
 // FRONT CONTROLLER
 $app->post('/', function (Request $request) use ($app, $bootstrap) {
@@ -32,6 +32,7 @@ $app->post('/', function (Request $request) use ($app, $bootstrap) {
 
     // FILTER AND RETRIEVE THE SMS MESSAGE FROM THE REQUEST
     $body = strtolower(preg_replace('/[^a-z0-9_-\s\&\,]+/i', '', $request->get('Body')));
+    $body = str_replace('&', 'at', $body);
     $words = explode(" ", $body);
 
     // RETURN ERROR FOR LACK OF INFORMATION
