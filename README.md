@@ -1,7 +1,7 @@
 # TextMyBusMIA
 
 ## What's the purpose of this?
-TBA
+"Text My Bus MIA" is an SMS system that enables the user to text the ID number of his or her bus stop and receive a message with upcoming bus times for that stop. The goal is to provide easy access to updated bus schedules for low-income individuals and other Miami-Dade County residents and visitors who rely on public transportation for commuting and getting around the county.
 
 ## Demo-ing the prototype 
 - SMS in the Twilio test phone number: (786) 629-6468
@@ -26,5 +26,5 @@ php composer.phar install
 ## Contributors
 - Adrian Cardenas (arcardenas@gmail.com)
 - Aleyda Mejia (aleydak.mejia@gmail.com)
+- Lisa Cawley Ruiz (lisancawley@gmail.com)
 - Ernie Hsiung (e@erniehsiung.com)
-- Lisa Cawley (Copywriter, e-mail redacted)
