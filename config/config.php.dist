@@ -4,7 +4,7 @@ return array(
 	"gtfs_exchange" => array(
 		"feeds" => array(
 			"mdt" => "http://www.gtfs-data-exchange.com/agency/miami-dade-transit/feed",
-			"brampton" => "http://www.gtfs-data-exchange.com/agency/brampton-transit/feed", //Test feed with current data
+			//"brampton" => "http://www.gtfs-data-exchange.com/agency/brampton-transit/feed",
 		),
 	),
 	"twilio" => array(
@@ -12,10 +12,22 @@ return array(
 		"sid" => "",
 		"auth_token" => "",
 	),
+	"mapquest" => array(
+            "app_key" => "",
+     ),
 	"db" => array(
 		"driver" => "PDO",
-		"dsn" => "mysql:host=DB_HOST;dbname=DB_NAME",
+		"dsn" => "mysql:host=localhost;dbname=",
 		"user" => "",
 		"pass" => "",
+	),
+	"translation" => array(
+		"file_pattern" => __DIR__ . "/../translate/%s/language.php",
+		"accepted" => array(
+			"en" => 'en-US',
+			"es" => 'es-ES',
+			"cr" => 'fr-FR',
+			'fr" => 'fr-FR',
+		),
 	),
 );	
