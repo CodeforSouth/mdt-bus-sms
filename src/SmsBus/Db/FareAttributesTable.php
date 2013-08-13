@@ -10,6 +10,40 @@
 namespace SmsBus\Db;
 
 
-class FareAttributesTable {
+class FareAttributesTable extends AbstractTable {
 
+    public function fetchAll($where = array(), $sort = '')
+    {
+        // TODO: Implement fetchAll() method.
+    }
+
+    public function fetch($id)
+    {
+        // TODO: Implement fetch() method.
+    }
+
+    public function update($data = array())
+    {
+        // TODO: Implement update() method.
+    }
+
+    public function save($data = array())
+    {
+        // TODO: Implement save() method.
+    }
+
+    public function delete($id)
+    {
+        // TODO: Implement delete() method.
+    }
+
+    public function needsAgency()
+    {
+        // TODO: Implement needsAgency() method.
+    }
+
+    public function setAgencyId($agency_id = 0)
+    {
+        // TODO: Implement setAgencyId() method.
+    }
 }
