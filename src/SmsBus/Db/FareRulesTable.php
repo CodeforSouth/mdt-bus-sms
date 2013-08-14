@@ -2,17 +2,17 @@
 /**
  * Created by JetBrains PhpStorm.
  * User: aramonc
- * Date: 8/12/13
- * Time: 7:26 PM
+ * Date: 8/14/13
+ * Time: 12:00 AM
  * To change this template use File | Settings | File Templates.
  */
 
 namespace SmsBus\Db;
 
 
-class FareAttributesTable extends AbstractTable {
+class FareRulesTable extends AbstractTable {
 
-    protected $table = 'fare_attributes';
+    protected $table = 'fare_rules';
 
     public function fetchAll($where = array(), $sort = '')
     {
