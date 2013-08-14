@@ -20,7 +20,11 @@ abstract class AbstractTable {
 		$this->openConnection();
 	}
 
-	public function openConnection(Config $config = null) {
+    /**
+     * Open the PDO connection to the DB
+     * @param Config $config
+     */
+    public function openConnection(Config $config = null) {
 		if (!$config) {
 			$config = $this->config;
 		}
@@ -36,7 +40,12 @@ abstract class AbstractTable {
 	abstract public function needsAgency();
 	abstract public function setAgencyId($agency_id = 0);
 
-	public function importCSV(\Keboola\Csv\CsvFile $csv) {
+    /**
+     * Parse the provided CSV file & import the data the instantiated table
+     * @param \Keboola\Csv\CsvFile $csv
+     * @return string
+     */
+    public function importCSV(\Keboola\Csv\CsvFile $csv) {
 		$csv->rewind();
 		$cols = $csv->current();
 		$sqlDuplicate = " ON DUPLICATE KEY UPDATE";
@@ -58,6 +67,9 @@ abstract class AbstractTable {
 			$i = 0;
 			foreach ($cols as $col) {
 				$insertData[":" . $col . $csv->key()] = $row[$i];
+                if($col == 'agency_id') {
+                    $insertData[":" . $col . $csv->key()] = $this->agency;
+                }
 				$i++;
 			}
 			if($this->needsAgency() && !in_array('agency_id', $cols) && $this->agency) {
@@ -81,6 +93,7 @@ abstract class AbstractTable {
 			$result = $stmt->execute($insertData);
 			if(!$result) {
 				var_dump($sql);
+                var_dump($insertData);
 				var_dump($this->table);
 				var_dump($stmt->errorInfo());
 			}
