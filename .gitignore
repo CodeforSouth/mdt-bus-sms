@@ -1,0 +1,6 @@
+cgi-bin
+config/config.php
+composer.phar
+.idea
+profiles
+xhprof
