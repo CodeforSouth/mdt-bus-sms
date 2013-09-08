@@ -6,7 +6,7 @@ use SmsBus\Db\AbstractTable;
 use Zend\Config\Config;
 
 class ReceivedSMSTable extends AbstractTable {
-	protected $table = 'received_sms';
+	protected $table = 'logs';
 	protected $error = '';
 	
 	public function fetchAll($where = array(), $sort = '') {
