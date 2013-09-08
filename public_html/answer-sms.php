@@ -26,43 +26,49 @@ $app->post('/', function (Request $request) use ($app, $bootstrap) {
         return $app->redirect('http://miamiwiki.org/SMSBus_Project');
     }
 
+    $sanitized = $bootstrap->getFilter()->sanitizePost($request->request->all());
+
     // SAVE THE POST TO THE DB FOR DEBUGGING
     $smsTable = new \SmsBus\Db\ReceivedSMSTable();
-    $smsTable->save($request->request->all());
+    $smsTable->save($sanitized);
 
-    // FILTER AND RETRIEVE THE SMS MESSAGE FROM THE REQUEST
-    $body = strtolower(preg_replace('/[^a-z0-9_-\s\&\,]+/i', '', $request->get('Body')));
-    $body = str_replace('&', 'at', $body);
-    $words = explode(" ", $body);
+    $message = $bootstrap->translateMessage($sanitized['Body']);
 
-    // RETURN ERROR FOR LACK OF INFORMATION
-    if(count($words) <= 1) {
-        $bootstrap->getTwiml()->sms("Please send more information");
-        return $bootstrap->getResponse();
-    }
 
-    // CHECK THAT THE FIRST WORD IS AN ACCEPTED TRANSLATION LANGUAGE
-    if($bootstrap->isAcceptedLocale($words[0])) {
-        $bootstrap->setLocale(array_shift($words));
-        // TRANSLATE EACH WORD OR RETURN THE WORD (NUMBERS JUST GET RETURNED)
-        foreach($words as $i => $command) {
-            $words[$i] = $bootstrap->getTranslator()->translate($command, 'smsbus');
-        }
-    }
 
-    // CREATE A SUB REQUEST TO HANDLE THE DIFFERENT APP COMMANDS
-    if($words[0] == 'stop' && $words[1] == 'at') {
-        // REMOVE THE COMMAND WORDS
-        $action =  array_shift($words) . '/' . array_shift($words);
-        $addressFull = implode(' ', $words);
-        $subRequest = Request::create('/' . $bootstrap->getTranslator()->getLocale() . '/' . $action . '/' . urlencode($addressFull));
-    } else {
-        $subRequest = Request::create('/' . $bootstrap->getTranslator()->getLocale() . '/' . implode('/', $words));
-    }
-    $response = $app->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
+//    // FILTER AND RETRIEVE THE SMS MESSAGE FROM THE REQUEST
+//    $body = strtolower(preg_replace('/[^a-z0-9_-\s\&\,]+/i', '', $request->get('Body')));
+//    $body = str_replace('&', 'at', $body);
+//    $words = explode(" ", $body);
+//
+//    // RETURN ERROR FOR LACK OF INFORMATION
+//    if(count($words) <= 1) {
+//        $bootstrap->getTwiml()->sms("Please send more information");
+//        return $bootstrap->getResponse();
+//    }
+//
+//    // CHECK THAT THE FIRST WORD IS AN ACCEPTED TRANSLATION LANGUAGE
+//    if($bootstrap->isAcceptedLocale($words[0])) {
+//        $bootstrap->setLocale(array_shift($words));
+//        // TRANSLATE EACH WORD OR RETURN THE WORD (NUMBERS JUST GET RETURNED)
+//        foreach($words as $i => $command) {
+//            $words[$i] = $bootstrap->getTranslator()->translate($command, 'smsbus');
+//        }
+//    }
+//
+//    // CREATE A SUB REQUEST TO HANDLE THE DIFFERENT APP COMMANDS
+//    if($words[0] == 'stop' && $words[1] == 'at') {
+//        // REMOVE THE COMMAND WORDS
+//        $action =  array_shift($words) . '/' . array_shift($words);
+//        $addressFull = implode(' ', $words);
+//        $subRequest = Request::create('/' . $bootstrap->getTranslator()->getLocale() . '/' . $action . '/' . urlencode($addressFull));
+//    } else {
+//        $subRequest = Request::create('/' . $bootstrap->getTranslator()->getLocale() . '/' . implode('/', $words));
+//    }
+//    $response = $app->handle($subRequest, HttpKernelInterface::SUB_REQUEST, false);
 
     // RETURN THE TWIML RESPONSE
-    $bootstrap->getTwiml()->sms($response->getContent());
+//    $bootstrap->getTwiml()->sms($response->getContent());
     return $bootstrap->getResponse();
 });
 
