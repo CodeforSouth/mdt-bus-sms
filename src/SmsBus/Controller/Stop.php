@@ -5,7 +5,7 @@
  * Date: 7/27/13
  */
 
-namespace SmsBus;
+namespace SmsBus\Controller;
 
 use ApiConsumer\Consumer;
 use Silex\Application;
@@ -14,7 +14,7 @@ use SmsBus\Db\StopTimesTable;
 use Zend\Config\Config;
 use Zend\I18n\Translator\Translator;
 
-class StopController
+class Stop
 {
     private $app;
     private $translator;
