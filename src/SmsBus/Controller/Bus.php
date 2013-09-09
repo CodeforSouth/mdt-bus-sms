@@ -10,10 +10,12 @@ namespace SmsBus\Controller;
 
 
 use Silex\Application;
+use SmsBus\Db\RoutesTable;
 use Zend\Config\Config;
 use Zend\I18n\Translator\Translator;
 
-class Bus {
+class Bus
+{
     private $app;
     private $translator;
     private $config;
@@ -30,12 +32,20 @@ class Bus {
         $translator = $this->translator;
         $config = $this->config;
         $busAction = $this->app['controllers_factory'];
-        $busAction->get('/{bus_id}', function ($bus_id) use ($translator, $config) {
-            if(strlen($bus_id) == 1 && !is_numeric($bus_id)) {
-                return 'not numeric ' . $bus_id;
-            }
 
-            return $bus_id;
+        $busAction->get('/{bus_id}', function ($bus_id) use ($translator, $config) {
+            $response = 'Bus ';
+            $routesTable = new RoutesTable();
+
+            // IF IT'S ONLY ONE CHARACTER APPEND A DASH FOR MORE ACCURACY
+            if (strlen($bus_id) == 1) {
+                $bus_id .= '-';
+            }
+            // START WITH THE LONG DESCRIPTION
+            $routes = $routesTable->searchByName($bus_id);
+
+
+            return $response;
         });
 
         return $busAction;

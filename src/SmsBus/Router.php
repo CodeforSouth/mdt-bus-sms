@@ -19,12 +19,12 @@ class Router {
     public function __construct()
     {
         $this->commands = array(
-            // MATCHES 'bus # at #'
-            '/\bbus\s\b([0-9]{1,3}[a-zA-Z]?|[a-zA-Z])\b\sat\s\b([0-9]{1,6})/' => function(array $match) {
+            // MATCHES 'bus # at #' (ie bus 101 at 2884, bus 72A at 456, bus A at 2884, bus Kendall Cruiser at 288)
+            '/\bbus\s\b([0-9]{1,3}[a-zA-Z]?|\b[a-zA-Z]\b|\w+\s?\w*)\b\sat\s\b([0-9]{1,6})/' => function(array $match) {
                 return '/bus/' . $match[1] . '/at/' . $match[2];
             },
-            // MATCHES 'bus #'
-            '/\bbus\s\b([0-9]{1,3}[a-zA-Z]?|[a-zA-Z])/' => function(array $match) {
+            // MATCHES 'bus #' (ie bus 101, bus 72A, bus A, bus Kendall Cruiser)
+            '/\bbus\s\b([0-9]{1,3}[a-zA-Z]?|\b[a-zA-Z]\b|\w+\s?\w*)/' => function(array $match) {
                 return '/bus/' . $match[1];
             }
         );
