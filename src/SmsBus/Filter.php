@@ -38,7 +38,7 @@ class Filter
         $sanitized = array();
         $sanitized['AccountSid'] = $data['AccountSid'];
         $sanitized['ApiVersion'] = isset($data['ApiVersion']) ? substr($this->dateFilter->filter($data['ApiVersion']), 0, 10) : null;
-        $sanitized['Body'] = isset($data['Body']) ? substr($this->bodyFilter->filter($data['Body']), 0, 160) : null;
+        $sanitized['Body'] = isset($data['Body']) ? strtolower(substr($this->bodyFilter->filter($data['Body']), 0, 160)) : null;
         $sanitized['From'] = isset($data['From']) ? substr($this->phoneFilter->filter($data['From']), 0, 12) : null;
         $sanitized['FromCity'] = isset($data['FromCity']) ? substr($this->alphaFilter->filter($data['FromCity']), 0, 255) : null;
         $sanitized['FromCountry'] =isset($data['FromCountry']) ? substr($this->alphaFilter->filter($data['FromCountry']), 0, 4) : null;

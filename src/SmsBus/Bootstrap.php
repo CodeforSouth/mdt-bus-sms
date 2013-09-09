@@ -33,6 +33,7 @@ class Bootstrap
         // INSTANTIATE THE TRANSLATOR
         $this->translator = new Translator();
         $this->translator->addTranslationFilePattern('phparray', $this->config->translation->base_dir, $this->config->translation->file_pattern, 'smsbus');
+        $this->translator->setLocale('en-US');
 
         // INSTANTIATE THE TWIML OBJECT
         $this->twiml = new \Services_Twilio_Twiml();

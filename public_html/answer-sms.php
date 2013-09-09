@@ -34,27 +34,17 @@ $app->post('/', function (Request $request) use ($app, $bootstrap) {
 
     $message = $bootstrap->translateMessage($sanitized['Body']);
 
+    // IF AFTER FILTERING & TRANSLATION, THE MESSAGE IS EMPTY, RETURN AN ERROR MESSAGE
+    if(empty($message)) {
+        $bootstrap->getTwiml()->sms("Please send more information");
+        return $bootstrap->getResponse();
+    }
 
+    // BUILD COMMAND ROUTE FROM MESSAGE
+    $command = $bootstrap->getRouter()->getRoute($message);
+    $response = $app->handle(Request::create($command), HttpKernelInterface::SUB_REQUEST, false);
 
-//    // FILTER AND RETRIEVE THE SMS MESSAGE FROM THE REQUEST
-//    $body = strtolower(preg_replace('/[^a-z0-9_-\s\&\,]+/i', '', $request->get('Body')));
-//    $body = str_replace('&', 'at', $body);
-//    $words = explode(" ", $body);
 //
-//    // RETURN ERROR FOR LACK OF INFORMATION
-//    if(count($words) <= 1) {
-//        $bootstrap->getTwiml()->sms("Please send more information");
-//        return $bootstrap->getResponse();
-//    }
-//
-//    // CHECK THAT THE FIRST WORD IS AN ACCEPTED TRANSLATION LANGUAGE
-//    if($bootstrap->isAcceptedLocale($words[0])) {
-//        $bootstrap->setLocale(array_shift($words));
-//        // TRANSLATE EACH WORD OR RETURN THE WORD (NUMBERS JUST GET RETURNED)
-//        foreach($words as $i => $command) {
-//            $words[$i] = $bootstrap->getTranslator()->translate($command, 'smsbus');
-//        }
-//    }
 //
 //    // CREATE A SUB REQUEST TO HANDLE THE DIFFERENT APP COMMANDS
 //    if($words[0] == 'stop' && $words[1] == 'at') {
