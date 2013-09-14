@@ -1,6 +1,7 @@
 <?php
 namespace SmsBus;
 
+use Zend\Feed\Exception\RuntimeException;
 use Zend\Feed\Reader;
 use Zend\Config\Config;
 
@@ -32,16 +33,17 @@ class ExchangeFeedReader
         $today = new \DateTime();
         foreach ($this->config->feeds as $agency => $url) {
             echo "\nImporting : " . $url . "\n";
+            $channel = null;
             try {
                 $channel = Reader\Reader::import($url);
-            } catch (\Zend\Feed\Exception\Reader\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 // feed import failed
                 echo "Exception caught importing feed: {$e->getMessage()}\n";
                 exit;
             } catch (\ErrorException $e) {
                 echo $e->getMessage();
             }
-            if ($channel->count() > 0 && $today->diff($channel->getDateModified())->d < 7) {
+            if ($channel && $channel->count() > 0 && $today->diff($channel->getDateModified())->d < 7) {
                 $file = $this->getDataArchive($agency, $channel->current()->getEnclosure()->url);
                 $dir = $this->extractData($agency, $file);
 
