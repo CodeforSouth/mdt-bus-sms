@@ -46,8 +46,7 @@ class RoutesTable extends AbstractTable {
         }
 
         $sql = "SELECT * FROM `routes` WHERE ";
-        $sql .= "(`route_long_name` LIKE " . implode(" AND `route_long_name` LIKE ", array_keys($search_terms)) . ") OR ";
-        $sql .= "`route_short_name` LIKE " . implode(" OR `route_short_name LIKE ", array_keys($search_terms));
+        $sql .= "`route_long_name` LIKE " . implode(" AND `route_long_name` LIKE ", array_keys($search_terms)) . "";
 
         $stmt = $this->dbConn->prepare($sql);
 
