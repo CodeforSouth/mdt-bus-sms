@@ -24,4 +24,5 @@ return array(
     'will not stop at' => "ne s'arrêtera pas à",
     'any more today' => "aujourd'hui",
     'There was an error fetching the stop times' => "Il y avait une erreur de la récupération des temps d'arrêt",
+    'There was an error fetching the route information' => "Il y avait une erreur de la récupération de la informacion du bus",
 );
