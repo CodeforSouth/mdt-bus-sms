@@ -37,13 +37,8 @@ class Bus
             $response = 'Bus ';
             $routesTable = new RoutesTable();
 
-            // IF IT'S ONLY ONE CHARACTER APPEND A DASH FOR MORE ACCURACY
-            if (strlen($bus_id) == 1) {
-                $bus_id .= '-';
-            }
-            // START WITH THE LONG DESCRIPTION
-            $routes = $routesTable->searchByName($bus_id);
-
+            // MAKE SURE THE BUS ID IS THE SHORT DESCRIPTION
+            $bus_id = $routesTable->getNumericRouteId($bus_id);
 
             return $response;
         });
