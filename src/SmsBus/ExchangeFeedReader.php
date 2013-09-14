@@ -117,8 +117,13 @@ class ExchangeFeedReader
         }
         $now = new \DateTime();
         $tableName = $this->toCamelCase($tableName, true);
+        /** @var $tableClass \SmsBus\Db\AbstractTable */
         $tableClass = '\\SmsBus\\Db\\' . ucfirst($tableName) . 'Table';
         $table = new $tableClass();
+
+        // CLEAR THE TABLE FIRST, TO AVOID DUPLICATES
+        $table->clearTable();
+
         if ($agency_id && $table->needsAgency()) {
             $table->setAgencyId($agency_id);
         }
