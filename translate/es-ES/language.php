@@ -18,6 +18,9 @@ return array(
     // TRANSLATIONS TO SPANISH
     'Bus' => 'Autobus',
     'stop' => 'parada',
+    'at' => 'en',
+    'Arrives' => 'Llega',
+    'arrives' => 'llega',
     \SmsBus\Gis::NORTHBOUND => 'Rumbo norte',
     \SmsBus\Gis::WESTBOUND => 'Rumbo oeste',
     \SmsBus\Gis::SOUTHBOUND => 'Rumbo sur',

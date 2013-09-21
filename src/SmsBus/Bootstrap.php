@@ -160,7 +160,7 @@ class Bootstrap
             $message = substr($message, 2, strlen($message));
             $words = explode(" ", $message);
             foreach($words as $i => $word) {
-                $words[$i] = $this->getTranslator()->translate($word);
+                $words[$i] = $this->getTranslator()->translate($word, 'smsbus');
             }
             $message = implode($words, ' ');
         }

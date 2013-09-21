@@ -12,9 +12,22 @@ class RoutesTable extends AbstractTable
 
     }
 
+    /**
+     * Retrieve a route by it's short name.
+     * @param int $id
+     * @return bool|mixed
+     */
     public function fetch($id)
     {
+        $sql = "SELECT * FROM " . $this->table . " WHERE route_short_name = :id";
+        $stmt = $this->dbConn->prepare($sql);
 
+        $resultSet = $stmt->execute(array(':id' => intval($id)));
+        if(!$resultSet) {
+            return false;
+        }
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function update($data = array())
@@ -67,10 +80,15 @@ class RoutesTable extends AbstractTable
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function getNumericRouteId($route_id)
+    /**
+     * Performs a search & tries to find the route. If more than one route is returned, the first route is returned.
+     * @param string $route
+     * @return bool|array
+     */
+    public function search($route)
     {
-        if (is_numeric($route_id)) {
-            return $route_id;
+        if (is_numeric($route)) {
+            return $this->fetch($route);
         }
 
         // SINCE IT'S NOT NUMERIC, START SEARCHING BY NAME IN THE LONG DESCRIPTION FIELD
@@ -78,23 +96,25 @@ class RoutesTable extends AbstractTable
         $routes = null;
 
         // IF IT'S ONLY ONE CHARACTER APPEND A DASH FOR MORE ACCURACY
-        if (strlen($route_id) == 1) {
-            $route_id .= '-';
+        if (strlen($route) == 1) {
+            $route .= '-';
         }
 
-        $routes = $this->searchByName($route_id);
+        $routes = $this->searchByName($route);
 
         // IF THE ABOVE RETURNED NOTHING, IT'S POSSIBLE IT'S ONE OF THE ALTERNATE ROUTES, IE 72A
-        $route_id = substr($route_id, 0, strlen($route_id) - 1);;
-        if (!$routes && strlen($route_id) > 2 && is_numeric($route_id)) {
-            return $route_id;
+        if (!$routes && strlen($route) > 2) {
+            $route = substr($route, 0, strlen($route) - 1);
+            if(is_numeric($route)) {
+                return $this->fetch(($route));
+            }
         }
 
         // IF WE STILL DIDN'T FIND THE ROUTE THROW AN ERROR BECAUSE WE COULDN'T FIND WHAT THEY WANTED
-        if ((!$routes || count($routes) == 0) && !is_numeric($route_id)) {
+        if ((!$routes || empty($routes))) {
             return false;
         }
 
-        return 0;
+        return array_shift($routes);
     }
 }
