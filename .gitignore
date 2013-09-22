@@ -4,3 +4,4 @@ composer.phar
 .idea
 profiles
 xhprof
+error_log
