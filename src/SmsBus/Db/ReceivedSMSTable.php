@@ -6,7 +6,7 @@ use SmsBus\Db\AbstractTable;
 use Zend\Config\Config;
 
 class ReceivedSMSTable extends AbstractTable {
-	protected $table = 'received_sms';
+	protected $table = 'logs';
 	protected $error = '';
 	
 	public function fetchAll($where = array(), $sort = '') {
@@ -22,13 +22,10 @@ class ReceivedSMSTable extends AbstractTable {
 		if(empty($data)) {
 			return false;
 		}
-		$newData = array();
-		foreach($data as $key => $val) {
-			$newData[strtolower($key)] = $val;
-		}
-		$sql = "INSERT INTO " . $this->table . " (`" . implode("`, `", array_keys($newData)) . "`) VALUES (:" . implode(", :", array_keys($newData)) . ")";
+
+		$sql = "INSERT INTO " . $this->table . " (`" . implode("`, `", array_keys($data)) . "`) VALUES (:" . implode(", :", array_keys($data)) . ")";
 		$stmt = $this->dbConn->prepare($sql);
-		$result = $stmt->execute($newData);
+		$result = $stmt->execute($data);
 		if(!$result) {
 			$arr = $stmt->errorInfo();
 			$this->error = $arr[2];

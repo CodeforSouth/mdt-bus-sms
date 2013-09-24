@@ -1,6 +1,7 @@
 <?php
 namespace SmsBus;
 
+use Zend\Feed\Exception\RuntimeException;
 use Zend\Feed\Reader;
 use Zend\Config\Config;
 
@@ -18,7 +19,7 @@ class ExchangeFeedReader
     public function __construct(Config $config = null)
     {
         if (!$config) {
-            $config = new Config(include __DIR__ . "/../../config/config.php");
+            $config = new Config(include realpath(__DIR__ . "/../../config/config.php"));
         }
 
         $this->config = clone $config->gtfs_exchange;
@@ -32,16 +33,17 @@ class ExchangeFeedReader
         $today = new \DateTime();
         foreach ($this->config->feeds as $agency => $url) {
             echo "\nImporting : " . $url . "\n";
+            $channel = null;
             try {
                 $channel = Reader\Reader::import($url);
-            } catch (\Zend\Feed\Exception\Reader\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 // feed import failed
                 echo "Exception caught importing feed: {$e->getMessage()}\n";
                 exit;
             } catch (\ErrorException $e) {
                 echo $e->getMessage();
             }
-			if($channel->count() > 0 && $today->diff($channel->getDateModified())->d < 7) {
+            if ($channel && $channel->count() > 0 && $today->diff($channel->getDateModified())->d < 7) {
                 $file = $this->getDataArchive($agency, $channel->current()->getEnclosure()->url);
                 $dir = $this->extractData($agency, $file);
 
@@ -103,9 +105,9 @@ class ExchangeFeedReader
     }
 
     /**
-     * @param string $tableName
-     * @param string $file
-     * @param int $agency_id
+     * @param  string $tableName
+     * @param  string $file
+     * @param  int    $agency_id
      * @return mixed
      */
     private function insertRecords($tableName, $file, $agency_id)
@@ -115,20 +117,26 @@ class ExchangeFeedReader
         }
         $now = new \DateTime();
         $tableName = $this->toCamelCase($tableName, true);
+        /** @var $tableClass \SmsBus\Db\AbstractTable */
         $tableClass = '\\SmsBus\\Db\\' . ucfirst($tableName) . 'Table';
         $table = new $tableClass();
+
+        // CLEAR THE TABLE FIRST, TO AVOID DUPLICATES
+        $table->clearTable();
+
         if ($agency_id && $table->needsAgency()) {
             $table->setAgencyId($agency_id);
         }
         $result = $table->importCSV(new \Keboola\Csv\CsvFile($file));
         echo "Time elapsed: " . $this->getTimeDiff($now) . "\n";
+
         return $result;
     }
 
     /**
      * Downloads a GTFS archive from a URL using Curl
-     * @param string $agency
-     * @param string $url
+     * @param  string $agency
+     * @param  string $url
      * @return string The path the GTFS archive was saved to or the Curl error
      */
     private function getDataArchive($agency, $url)
@@ -153,7 +161,7 @@ class ExchangeFeedReader
 
     /**
      * Extract files from a Zip archive
-     * @param string $agency
+     * @param  string $agency
      * @param  string $zipFile
      * @return string
      */
@@ -175,8 +183,8 @@ class ExchangeFeedReader
 
     /**
      * Converts a string with under_scores to camelCase
-     * @param string $str
-     * @param bool $capitalise_first_char Converts to full CamelCase if true
+     * @param  string $str
+     * @param  bool   $capitalise_first_char Converts to full CamelCase if true
      * @return mixed
      */
     protected function toCamelCase($str, $capitalise_first_char = false)
@@ -185,18 +193,20 @@ class ExchangeFeedReader
             $str[0] = strtoupper($str[0]);
         }
         $func = create_function('$c', 'return strtoupper($c[1]);');
+
         return preg_replace_callback('/_([a-z])/', $func, $str);
     }
 
     /**
      * Return the difference between a start time and the current time in minutes
-     * @param \DateTime $start
+     * @param  \DateTime $start
      * @return string
      */
     protected function getTimeDiff(\DateTime $start)
     {
         $now = new \DateTime();
         $diff = $now->diff($start);
+
         return (($diff->h * 60) + $diff->i) + round(($diff->s / 60), 3) . " mintues";
     }
 }

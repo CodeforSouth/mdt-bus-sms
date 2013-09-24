@@ -1,0 +1,19 @@
+{
+	"require" : {
+		"twilio/sdk": "3.10.0",
+		"keboola/csv": "1.1.0",
+		"zendframework/zend-config": "2.2.*",
+		"zendframework/zend-feed": "2.2.*",
+		"zendframework/zend-http": "2.2.*",
+		"zendframework/zend-i18n": "2.2.*",
+        	"zendframework/zend-filter": "2.2.*",
+	        "zendframework/zend-servicemanager": "2.2.*",
+        	"silex/silex": "1.1.0",
+	        "adamculp/api-consumer": "dev-master"
+	},
+	"autoload" : {
+		"psr-0" : {
+			"SmsBus" : "src/"
+		}
+	}
+}

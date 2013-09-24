@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 13, 2013 at 09:49 PM
+-- Generation Time: Sep 07, 2013 at 09:10 AM
 -- Server version: 5.5.30-30.2
 -- PHP Version: 5.3.17
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `agency` (
   `agency_fare_url` varchar(120) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`agency_id`),
   UNIQUE KEY `name` (`agency_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -149,6 +149,34 @@ CREATE TABLE IF NOT EXISTS `frequencies` (
   `exact_times` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`trip_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `logs`
+--
+
+DROP TABLE IF EXISTS `logs`;
+CREATE TABLE IF NOT EXISTS `logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `AccountSid` varchar(34) COLLATE utf8_unicode_ci NOT NULL,
+  `ApiVersion` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `Body` varchar(160) COLLATE utf8_unicode_ci NOT NULL,
+  `From` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `FromCity` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `FromCountry` varchar(4) COLLATE utf8_unicode_ci NOT NULL,
+  `FromState` varchar(4) COLLATE utf8_unicode_ci NOT NULL,
+  `FromZip` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `SmsMessageSid` varchar(34) COLLATE utf8_unicode_ci NOT NULL,
+  `SmsSid` varchar(34) COLLATE utf8_unicode_ci NOT NULL,
+  `SmsStatus` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `To` varchar(12) COLLATE utf8_unicode_ci NOT NULL,
+  `ToCity` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `ToCountry` int(4) NOT NULL,
+  `ToState` int(4) NOT NULL,
+  `ToZip` int(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
