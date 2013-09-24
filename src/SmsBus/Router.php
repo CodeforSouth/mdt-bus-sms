@@ -26,7 +26,18 @@ class Router {
             // MATCHES 'bus #' (ie bus 101, bus 72A, bus A, bus Kendall Cruiser)
             '/\bbus\s\b([0-9]{1,3}[a-zA-Z]?|\b[a-zA-Z]\b|\w+\s?\w*)/' => function(array $match) {
                 return '/bus/' . $match[1];
-            }
+            },
+            // MATCHES 'stop at street &|at avenue, city, state'
+            '/\bstop\sat\s\b([a-zA-Z0-9\s]+)\b\s(\&|at)\s\b([a-zA-Z0-9\s]+),?\s([a-zA-Z\s]+),?\s?([a-zA-Z]{2,})?/' => function(array $match) {
+                $route = '/stop/location/' . $match[1] . '/' . $match[3];
+                $route .= isset($match[4]) ? '/' . $match[4] : '';
+                $route .= isset($match[4]) && isset($match[5]) ? '/' . $match[5] : '';
+                return $route;
+            },
+            // MATCHES 'stop #'
+            '/\bstop\s\b([0-9]{1,5})/' => function(array $match) {
+                return '/stop/' . $match[1];
+            },
         );
     }
 

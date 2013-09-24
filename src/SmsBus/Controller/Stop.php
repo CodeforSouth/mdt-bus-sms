@@ -10,7 +10,7 @@ namespace SmsBus\Controller;
 use ApiConsumer\Consumer;
 use Silex\Application;
 use SmsBus\Db\StopsTable;
-use SmsBus\Db\StopTimesTable;
+use SmsBus\Gis;
 use Zend\Config\Config;
 use Zend\I18n\Translator\Translator;
 
@@ -31,58 +31,23 @@ class Stop
      * The controller definition for the stop bus controller
      * @return mixed
      */
-    public function getStopBusController()
+    public function getStop()
     {
         $translator = $this->translator;
         $stopBus = $this->app['controllers_factory'];
-        $stopBus->get('/{stopId}/{bus}/{busId}', function ($locale, $stopId, $bus, $busId) use ($translator) {
+        $stopBus->get('/{stopId}', function ($stopId) use ($translator) {
 
-            // PREPARE THE TRANSLATOR
-            $translator->setLocale($locale);
+            $stopTable = new StopsTable();
 
-            // INSTANTIATE THE TIMES TABLE MAPPER
-            $timesTable = new StopTimesTable();
-
-            // GET THE NEXT 3 TIMES THE BUS WILL ARRIVE AT THE STOP
-            if ($bus) {
-                $stopTimes = $timesTable->fetchByBusStop($stopId, $busId);
-            } else {
-                $stopTimes = $timesTable->fetchByStop($stopId);
+            $stop = $stopTable->fetch($stopId);
+            if(!$stop) {
+                return $this->translator->translate("There was an error fetching the stop information");
             }
 
-            // INSTANTIATE THE DEFAULTS
-            $times = array();
+            $stop = array_shift($stop);
 
-            if (!$stopTimes) {
-                // NOTHING WAS RETURNED SO RETURN AN ERROR
-                $message = $translator->translate("There was an error fetching the stop times");
-            } else if (is_array($stopTimes) && count($stopTimes) > 0) {
-                // FORMAT THE TIMES TO RETURN
-                foreach ($stopTimes as $stop_time) {
-                    $now = new \DateTime();
-
-                    $time = $now->diff(\DateTime::createFromFormat("H:i:s", $stop_time['arrival_time']));
-
-                    if ($bus) {
-                        $times[] = $time->h . ":" . $time->i . ":" . $time->s;
-                    } else {
-                        $times[] = $translator->translate('Bus') . ' ' . $stop_time['route_short_name'] . ': ' . $time->h . ":" . $time->i . ":" . $time->s;
-                    }
-                }
-
-                $message = implode(', ', $times);
-            } else {
-                // NO TIMES WERE RETURNED SO THE BUS WILL NOT ARRIVE AT THE STOP ANY ORE TODAY
-                $message = $translator->translate("Bus") . " " . $busId . " " . $translator->translate("will not stop at") . " " . $stopId . " " . $translator->translate("any more today");
-            }
-
-            return $message;
-        })
-            ->convert('stopId', array($this, 'intProvider'))
-            ->convert('busId', array($this, 'intProvider'))
-            ->value('locale', 'en-US')
-            ->value('bus', false)
-            ->value('busId', 0);
+            return "http://maps.google.com/?q=" . $stop['stop_lat'] . ',' . $stop['stop_lon'];
+        })->convert('stopId', array($this, 'intProvider'));
         return $stopBus;
     }
 
@@ -91,17 +56,19 @@ class Stop
         $translator = $this->translator;
         $config = $this->config;
         $stops = $this->app['controllers_factory'];
-        $stops->get('/{address}', function ($locale, $address) use ($translator, $config) {
-            // PREPARE THE TRANSLATOR
-            $translator->setLocale($locale);
-
+        $stops->get('/location/{address1}/{address2}/{city}/{state}', function ($address1, $address2, $city = null, $state = null) use ($translator, $config) {
             // PREPARE ARCGIS API REQUEST
             $url = 'http://www.mapquestapi.com/geocoding/v1/address';
+
+            $location = $address1 . ' at ' . $address2;
+            $location .= isset($city) ? ', ' . $city : '' ;
+            $location .= isset($city) && isset($state) ? ', ' . $state : '';
+
             $params = array(
                 'key' => $config->mapquest->app_key,
-                'location' => $address,
+                'location' => urlencode($location),
                 'boundingBox' => '26.172906,-80.781097,25.267266,-79.990082', // BOUNDING BOX COVERS ALL OF DADE COUNTY DOWN TO THE DAGNY JOHNSON KEY
-                'maxResults' => 1,
+                'maxResults' => 3,
             );
 
             $consumer = new Consumer();
@@ -128,7 +95,7 @@ class Stop
             if(count($stopDirections) > 0) {
                 $message = implode(', ', $stopDirections);
             } else {
-                $message = "Could not find stops at " . urldecode($address);
+                $message = "Could not find stops at " . $location;
             }
 
             return $message;

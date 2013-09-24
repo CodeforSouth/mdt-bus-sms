@@ -28,4 +28,5 @@ return array(
     'any more today' => "aujourd'hui",
     'There was an error fetching the stop times' => "Il y avait une erreur de la récupération des temps d'arrêt",
     'There was an error fetching the route information' => "Il y avait une erreur de la récupération de la informacion du bus",
+    'There was an error fetching the stop information' => "Il y avait une erreur de la récupération de la informacion de l'arrêt",
 );

@@ -29,4 +29,5 @@ return array(
     'any more today' => 'hoy',
     'There was an error fetching the stop times' => 'Hubo un error buscando los horarios de la parada',
     'There was an error fetching the route information' => 'Hubo un error buscando la informacion de la ruta',
+    'There was an error fetching the stop information' => 'Hubo un error buscando la informacion de la parada',
 );

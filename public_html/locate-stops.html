@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h1>Instructions</h1>
+
+                <p>Enter the address to an intersection &amp; press search. For example:</p>
+                <blockquote>sw 137 ave &amp; sw 56 st, miami, fl</blockquote>
+                <p>Try to always use the city & state with commas.</p>
+
+                <p>Works well:</p>
+                <blockquote>alhambra cir & ponce de leon blvd, coral gables, fl</blockquote>
+                <p>Does not work well:</p>
+                <blockquote>alhambra cir & ponce de leon blvd coral gables fl</blockquote>
+            </div>
+        </div>
+    </header>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <form name="search">
+                <div class="input-group">
+                    <input id="phrase" name="phrase" type="text" class="form-control" value="sw 137 ave & sw 56 st, miami, fl">
+                     <span class="input-group-btn">
+                        <button id="search" class="btn btn-default" type="button">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                     </span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div id="map">
+
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; Code for Miami 2013</p>
+    </footer>
+</div>
+<!-- /container -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
+<script src="http://www.mapquestapi.com/sdk/js/v7.0.s/mqa.toolkit.js?key=Fmjtd%7Cluub256bn0%2C8a%3Do5-9u8214"></script>
+<script src="js/vendor/bootstrap.min.js"></script>
+
+<script src="js/main.js"></script>
+</body>
+</html>

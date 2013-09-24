@@ -10,24 +10,7 @@ class StopsTable extends AbstractTable {
 
     public function fetchAllNear($lat, $lng)
     {
-        $R = 3959;
-
-        // INTERSECTION POINTS
-        $lat1 = "radians(:lat)";
-        $lng1 = "radians(:lng)";
-
-        // STOP COORDS
-        $lat2 = "radians(stop_lat)";
-        $lng2 = "radians(stop_lon)";
-
-        $dLng = "$lng2 - $lng1";
-
-        $y = "sin($dLng) * cos($lat2)";
-        $x = "(cos($lat1) * sin($lat2)) - (sin($lat1) * cos($lat2) * cos($dLng))";
-        $bearing = "degrees(atan2($y, $x)) as bearing";
-        $distance = "($R * acos((cos($lat1) * cos($lat2) * cos($lng2 - $lng1)) + (sin($lat1) * sin($lat2)))) AS distance";
-
-        $sql = "SELECT *, $distance, $bearing FROM stops  HAVING distance < .05 ORDER BY distance LIMIT 0 , 20";
+        $sql = "SELECT *, haversine(stop_lat, stop_lon, :lat, :lng) AS distance, bearing(stop_lat, stop_lon, :lat, :lng) as bearing FROM stops  HAVING distance < 0.05 ORDER BY distance LIMIT 0 , 20";
         $stmt = $this->dbConn->prepare($sql);
 
         $result = $stmt->execute(array(":lat" => $lat, ":lng" => $lng));
@@ -41,8 +24,25 @@ class StopsTable extends AbstractTable {
 	public function fetchAll($where = array(), $sort = '') {
 		
 	}
-	public function fetch($id) {
-		
+
+    /**
+     * Retrieves one stop location by it's ID
+     * @param int $id
+     * @return array|bool
+     */
+    public function fetch($id) {
+        if(intval($id) == 0) {
+            return false;
+        }
+		$sql = "SELECT * FROM stops WHERE stop_id = :id";
+        $stmt = $this->dbConn->prepare($sql);
+
+        $result = $stmt->execute(array(':id' => intval($id)));
+        if(!$result) {
+            //Should do error logging here
+            return false;
+        }
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 	public function update($data = array()) {
 		

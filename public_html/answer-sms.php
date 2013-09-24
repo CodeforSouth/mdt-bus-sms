@@ -58,7 +58,45 @@ $app->get('/', function() use ($app) {
 $app->mount('/bus', $busController->getBusAction());
 $app->mount('/bus', $busController->getBusArrivalAction());
 
-$app->mount('/{locale}/stop/at', $stopsController->getStops());
-$app->mount('/{locale}/stop', $stopsController->getStopBusController());
+$app->mount('/stop', $stopsController->getStop());
+$app->mount('/stop', $stopsController->getStops());
+
+// QUICK API CALL FOR USE WITH AJAX MAP
+$app->get('/stops/{a1}/{a2}/{city}/{state}', function($a1, $a2, $city = null, $state = null) use($app, $bootstrap) {
+    // PREPARE ARCGIS API REQUEST
+    $url = 'http://www.mapquestapi.com/geocoding/v1/address';
+
+    $location = $a1 . ' at ' . $a2;
+    $location .= isset($city) ? ', ' . $city : '' ;
+    $location .= isset($city) && isset($state) ? ', ' . $state : '';
+
+    $params = array(
+        'key' => $bootstrap->getConfig()->mapquest->app_key,
+        'location' => urlencode($location),
+        'boundingBox' => '26.172906,-80.781097,25.267266,-79.990082', // BOUNDING BOX COVERS ALL OF DADE COUNTY DOWN TO THE DAGNY JOHNSON KEY
+        'maxResults' => 3,
+    );
+
+    $consumer = new \ApiConsumer\Consumer();
+    $consumer->setUrl($url);
+    $consumer->setParams($params);
+    $consumer->setOptions(array());
+    $consumer->setResponseType('json');
+    $consumer->setCallType('get');
+
+    // GET ADDRESS GEOLOCATION
+    $result = $consumer->doApiCall();
+
+    $coords = $result['results'][0]['locations'][0]['latLng'];
+
+    $stopsTable = new \SmsBus\Db\StopsTable();
+    $stops = $stopsTable->fetchAllNear($coords['lat'], $coords['lng']);
+
+    if(!$stops) {
+        return json_encode(array('source' => $coords, 'locs' => array()));
+    }
+
+    return json_encode(array('source' => $coords, 'locs' => $stops));
+});
 
 $app->run();
