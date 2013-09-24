@@ -101,4 +101,22 @@ abstract class AbstractTable {
 		
 		return $this->dbConn->lastInsertId();
 	}
+
+    /**
+     * Performs a TRUNCATE operation on the table.
+     * @return bool
+     */
+    public function clearTable()
+    {
+        $sql = "SET FOREIGN_KEY_CHECKS=0; TRUNCATE " . $this->table . "; SET FOREIGN_KEY_CHECKS=1;";
+        $stmt = $this->dbConn->prepare($sql);
+        $result = $stmt->execute();
+        if(!$result) {
+            var_dump($sql);
+            var_dump($stmt->errorInfo());
+            return false;
+        }
+
+        return true;
+    }
 }

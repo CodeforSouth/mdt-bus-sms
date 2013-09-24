@@ -18,6 +18,9 @@ return array(
     // TRANSLATIONS TO SPANISH
     'Bus' => 'Autobus',
     'stop' => 'parada',
+    'at' => 'en',
+    'Arrives' => 'Llega',
+    'arrives' => 'llega',
     \SmsBus\Gis::NORTHBOUND => 'Rumbo norte',
     \SmsBus\Gis::WESTBOUND => 'Rumbo oeste',
     \SmsBus\Gis::SOUTHBOUND => 'Rumbo sur',
@@ -25,4 +28,6 @@ return array(
     'will not stop at' => 'no parara mas a',
     'any more today' => 'hoy',
     'There was an error fetching the stop times' => 'Hubo un error buscando los horarios de la parada',
+    'There was an error fetching the route information' => 'Hubo un error buscando la informacion de la ruta',
+    'There was an error fetching the stop information' => 'Hubo un error buscando la informacion de la parada',
 );

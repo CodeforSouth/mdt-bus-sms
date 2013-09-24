@@ -22,6 +22,8 @@ class Bootstrap
     private $response;
     private $locale = 'en-US';
     private $acceptedLocales;
+    private $filter;
+    private $router;
 
     public function __construct()
     {
@@ -31,6 +33,7 @@ class Bootstrap
         // INSTANTIATE THE TRANSLATOR
         $this->translator = new Translator();
         $this->translator->addTranslationFilePattern('phparray', $this->config->translation->base_dir, $this->config->translation->file_pattern, 'smsbus');
+        $this->translator->setLocale('en-US');
 
         // INSTANTIATE THE TWIML OBJECT
         $this->twiml = new \Services_Twilio_Twiml();
@@ -39,6 +42,12 @@ class Bootstrap
         $this->response = new Response();
         $this->response->headers->set('Content-type', 'text/xml');
         $this->response->setStatusCode(200);
+
+        // INSTANTIATE THE FILTER
+        $this->filter = new Filter();
+
+        // INSTANTIATE THE COMMAND ROUTER
+        $this->router = new Router();
     }
 
     /**
@@ -117,4 +126,61 @@ class Bootstrap
         return $this->acceptedLocales;
     }
 
+    /**
+     * @return \SmsBus\Filter
+     */
+    public function getFilter()
+    {
+        return $this->filter;
+    }
+
+    /**
+     * @param \SmsBus\Filter $filter
+     */
+    public function setFilter($filter)
+    {
+        $this->filter = $filter;
+    }
+
+    /**
+     * Translates the received message to English if necessary
+     * @param string $message
+     * @return string
+     */
+    public function translateMessage($message)
+    {
+        if(empty($message)) {
+            return $message;
+        }
+
+        $locale = substr($message, 0, 2);
+
+        if($this->isAcceptedLocale($locale)) {
+            $this->setLocale($locale);
+            $message = substr($message, 2, strlen($message));
+            $words = explode(" ", $message);
+            foreach($words as $i => $word) {
+                $words[$i] = $this->getTranslator()->translate($word, 'smsbus');
+            }
+            $message = implode($words, ' ');
+        }
+
+        return $message;
+    }
+
+    /**
+     * @return \SmsBus\Router
+     */
+    public function getRouter()
+    {
+        return $this->router;
+    }
+
+    /**
+     * @param \SmsBus\Router $router
+     */
+    public function setRouter($router)
+    {
+        $this->router = $router;
+    }
 }
