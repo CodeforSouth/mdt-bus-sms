@@ -5,8 +5,16 @@ TBA
 
 ## Demo-ing the prototype 
 - SMS in the Twilio test phone number: (786) 629-6468
-- SMS should be in the format: "STOP [ID OF THE STOP] BUS [ROUTE NAME OF BUS]"
-- For example: "STOP 2884 BUS 101"
+- SMS should be in the format: "BUS [ROUTE SHORT NAME] AT [STOP LOCATION ID]"
+- For example: "BUS 101 AT 2884" (The 101/A route at 17th St & Meridian Ave, Miami Beach, FL)
+
+## Finding out stop location IDs (for internal use mostly)
+- SMS in the Twilio test phone number: (786) 629-6468
+- SMS in format: "STOP AT [INTERSECTION ADDRESS, CITY, STATE]" will return a list of stops near that intersection along with the calculated direction of the street they're on
+- Example: "STOP AT 17 ST & MEDIRIAN AVE, MIAMI BEACH, FL" returns #2884 Eastbound.
+- SMS in format: "STOP [LOCATION ID]" will return a Google Maps link centered on the coordinates of the location ID
+- Example: "STOP 2884" will return https://maps.google.com/maps?q=25.792236,-80.136955&num=1&t=m&z=19
+- You may also browse to http://smsbus.illogicalsystems.com/locate-stops.html?phrase=17+st+%26+meridian+ave%2C+miami+beach%2C+fl and play with the search box.
 
 ## How to set this up
 - Create a web server, basic LAMP stack (Requires PHP 5.3 and above)
@@ -22,6 +30,7 @@ php composer.phar install
 ## Open issues & Future Feature Requests
 - Right now, the bus IDs are in the GTFS data and - unfortunately - not part of the bus stop sign. As a workaround, we are playing around with taking a bus line and assigning a simple code for a stop. We are focusing on the South Beach Local (123) - Route ID #12782 in GTFS.
 - Translations in Spanish and Haitian Creole
+- Flesh out more the stop locator & maybe not use SMS to find location IDs.
 
 ## Contributors
 - Adrian Cardenas (arcardenas@gmail.com)
