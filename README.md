@@ -17,7 +17,7 @@ TBA
 - You may also browse to http://smsbus.illogicalsystems.com/locate-stops.html?phrase=17+st+%26+meridian+ave%2C+miami+beach%2C+fl and play with the search box.
 
 ## Filling out the Sticker
-![Txt Sticker](http://)
+![Txt Sticker](http://farm3.staticflickr.com/2860/10681801524_9221751bd4_m.jpg)
 - The "Bus" field refers to the bus route number. For example: 137, 288 (Kendall Kruiser), 72, etc.
   - The named routes (Sunset Kat, A, H, etc.) have route numbers also. For example: Sunset Kat = 272. If you don't know the number equivalent, look on pamphlets or the bus stop itself.
 - The "At" field refers to the stop ID number. You can find the stop number by going to http://smsbus.illogicalsystems.com/locate-stops.html and adding the intersection address.
