@@ -16,6 +16,16 @@ TBA
 - Example: "STOP 2884" will return https://maps.google.com/maps?q=25.792236,-80.136955&num=1&t=m&z=19
 - You may also browse to http://smsbus.illogicalsystems.com/locate-stops.html?phrase=17+st+%26+meridian+ave%2C+miami+beach%2C+fl and play with the search box.
 
+## Filling out the Sticker
+![Txt Sticker](http://)
+- The "Bus" field refers to the bus route number. For example: 137, 288 (Kendall Kruiser), 72, etc.
+  - The named routes (Sunset Kat, A, H, etc.) have route numbers also. For example: Sunset Kat = 272. If you don't know the number equivalent, look on pamphlets or the bus stop itself.
+- The "At" field refers to the stop ID number. You can find the stop number by going to http://smsbus.illogicalsystems.com/locate-stops.html and adding the intersection address.
+- Look for bus stops around major intersections near or in your neighborhood. 
+  - The stop signs will have the bus route numbers on them. 
+  - Once you have selected the stop, gotten it's ID, and bus route, fill out the bus route & stop ID in their respective fields.
+  - Place the sticker in a visible place on or near the bus stop sign that doesn't cover important information like route information & phone numbers.
+
 ## How to set this up
 - Create a web server, basic LAMP stack (Requires PHP 5.3 and above)
 - Clone the repo 
