@@ -18,13 +18,38 @@ TBA
 
 ## Filling out the Sticker
 ![Txt Sticker](http://farm3.staticflickr.com/2860/10681801524_9221751bd4_m.jpg)
-- The "Bus" field refers to the bus route number. For example: 137, 288 (Kendall Kruiser), 72, etc.
-  - The named routes (Sunset Kat, A, H, etc.) have route numbers also. For example: Sunset Kat = 272. If you don't know the number equivalent, look on pamphlets or the bus stop itself.
-- The "At" field refers to the stop ID number. You can find the stop number by going to http://smsbus.illogicalsystems.com/locate-stops.html and adding the intersection address.
-- Look for bus stops around major intersections near or in your neighborhood. 
-  - The stop signs will have the bus route numbers on them. 
-  - Once you have selected the stop, gotten it's ID, and bus route, fill out the bus route & stop ID in their respective fields.
-  - Place the sticker in a visible place on or near the bus stop sign that doesn't cover important information like route information & phone numbers.
+The instructions below explain how to find your bus stop number and your bus number for TEXTMYBUS.
+
+1. Go to http://smsbus.illogicalsystems.com/locate-stops.html
+2. Enter the address to an intersection & press search. For example:
+  - sw 137 ave & sw 56 st, miami, fl
+  - Try to always use the city & state with commas.
+    - Works well:
+      - alhambra cir & ponce de leon blvd, coral gables, fl
+    - Does not work well:
+      - alhambra cir & ponce de leon blvd coral gables fl
+3. Select the pin that represents your bus stop
+4. Write down the bus stop number associated with the pin.
+5. Find your sticker.
+6. Write your bus number where it says BUS
+7. Write the stop number where it says AT
+8. Stick your bus sticker on your stop.
+
+## WHAT IF MY BUS NUMBER IS A LETTER?
+All lettered buses have numbers. Here is a list of numbers associated with bus 
+
+routes:
+
+- A – 101
+- B – 102
+- C – 103
+- E – 105
+- G – 107 
+- H – 108
+- J – 110
+- L - 112
+- M – 113
+- S – 119
 
 ## How to set this up
 - Create a web server, basic LAMP stack (Requires PHP 5.3 and above)
