@@ -22,7 +22,7 @@ class Filter
     public function __construct()
     {
         $this->dateFilter = new PregReplace(array('pattern' => '/[^0-9\-\/]/', 'replacement' => ''));
-        $this->bodyFilter = new PregReplace(array('pattern' => '/[^a-zA-Z0-9_-\s\&\,]/', 'replacement' => ''));
+        $this->bodyFilter = new PregReplace(array('pattern' => '/[^a-zA-Z0-9_\-\s\&\,]/', 'replacement' => ''));
         $this->phoneFilter = new PregReplace(array('pattern' => '/[^0-9\+\-]/', 'replacement' => ''));
         $this->alphaFilter = new Alpha(true);
         $this->alnumFilter = new Alnum(true);
