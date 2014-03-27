@@ -5,3 +5,5 @@ composer.phar
 profiles
 xhprof
 error_log
+public_html/adminer
+.DS_Store
