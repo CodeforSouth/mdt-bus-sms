@@ -20,7 +20,7 @@
 ![Txt Sticker](http://farm3.staticflickr.com/2860/10681801524_9221751bd4_m.jpg)
 The instructions below explain how to find your bus stop number and your bus number for TEXTMYBUS.
 
-1. Go to http://smsbus.illogicalsystems.com/locate-stops.html
+1. Go to http://smsbus.miamicode.org/locate-stops.html
 2. Enter the address to an intersection & press search. For example:
   - sw 137 ave & sw 56 st, miami, fl
   - Try to always use the city & state with commas.
