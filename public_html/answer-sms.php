@@ -43,6 +43,13 @@ $app->post('/', function (Request $request) use ($app, $bootstrap) {
 
     // BUILD COMMAND ROUTE FROM MESSAGE
     $command = $bootstrap->getRouter()->getRoute($message);
+    
+    // CHECK FOR BAD COMMANDS
+    if($command == '') {
+        $bootstrap->getTwiml()->sms($message . ' is not recognized');
+        return $bootstrap->getResponse();
+    }
+    
     $response = $app->handle(Request::create($command), HttpKernelInterface::SUB_REQUEST, false);
 
     $bootstrap->getTwiml()->sms($response->getContent());
