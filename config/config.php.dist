@@ -27,7 +27,7 @@ return array(
 			"en" => 'en-US',
 			"es" => 'es-ES',
 			"cr" => 'fr-FR',
-			'fr" => 'fr-FR',
+			"fr" => 'fr-FR',
 		),
 	),
 );	
