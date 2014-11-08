@@ -8,7 +8,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 $app = new Silex\Application();
 $bootstrap = new \SmsBus\Bootstrap();
 
-$app['debug'] = true;
+$app['debug'] = false;
 
 // SERVICES
 
